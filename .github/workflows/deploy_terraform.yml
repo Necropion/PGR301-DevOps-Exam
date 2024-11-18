@@ -31,7 +31,7 @@ jobs:
 
       # Step 4: Change to the infra directory
       - name: Change Directory to infra
-        run: cd exam/infra
+        run: cd infra/
 
       # Step 5: Initialize Terraform
       - name: Initialize Terraform
