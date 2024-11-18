@@ -35,4 +35,5 @@ jobs:
 
       - name: Deploy with SAM
         run: |
+          cd ./sam_lambda/app-74
           sam deploy --no-confirm-changeset --stack-name img-generator-sam --capabilities CAPABILITY_IAM
