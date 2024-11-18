@@ -30,6 +30,7 @@ jobs:
 
       - name: Build with SAM
         run: |
+          cd ./sam_lambda/app-74
           sam build
 
       - name: Deploy with SAM
