@@ -33,18 +33,24 @@ jobs:
       - name: Change Directory to infra
         run: cd infra/
 
-      # Step 5: Initialize Terraform
+      # Step 5: Create Lambda Function Zip File
+      - name: Create Lambda Zip File
+        run: |
+          cd infra/
+          zip lambda_sqs.zip lambda_sqs.py
+
+      # Step 6: Initialize Terraform
       - name: Initialize Terraform
         working-directory: infra/
         run: terraform init
 
-      # Step 6: Run Terraform Plan on Non-Main Branches
+      # Step 7: Run Terraform Plan on Non-Main Branches
       - name: Terraform Plan
         if: github.ref != 'refs/heads/main'
         working-directory: infra/
         run: terraform plan
 
-      # Step 7: Run Terraform Apply on Main Branch
+      # Step 8: Run Terraform Apply on Main Branch
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         working-directory: infra/
