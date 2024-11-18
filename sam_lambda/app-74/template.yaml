@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Image Generator Application
+
+Globals:
+  Function:
+    Timeout: 120
+    Tracing: Active
+    MemorySize: 512
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: "pgr301-couch-explorers"
+  CandidateNumber:
+    Type: String
+    Default: "74"
+  ModelId:
+    Type: String
+    Default: "amazon.titan-image-generator-v1"
+
+Resources:
+  ImgGenerator:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ImgGenerator/
+      Handler: ImgGenerator.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          MODEL_ID: !Ref ModelId
+          BUCKET_NAME: !Ref BucketName
+          CANDIDATE_NUMBER: !Ref CandidateNumber
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource: "*"
+        - Statement:
+            Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: !Sub "arn:aws:s3:::${BucketName}/*"
+      Events:
+        GenerateImageApi:
+          Type: Api
+          Properties:
+            Path: /generate-image
+            Method: POST

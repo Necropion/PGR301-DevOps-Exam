@@ -1,0 +1,76 @@
+# Python-specific ignores
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.env
+*.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+*.whl
+
+# Virtual environment directories
+pip-log.txt
+pip-delete-this-directory.txt
+
+# macOS-specific ignores
+.DS_Store
+
+# Windows-specific ignores
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Terraform-specific ignores
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+crash.log
+override.tf
+override.tf.json
+*.tfvars
+*.tfvars.json
+
+# Ignore ZIP files for Lambda functions
+*.zip
+
+# GitHub Actions cache files (optional)
+.github/workflows/*~
+
+# AWS SAM artifacts (if you use SAM for local testing and deployment)
+.aws-sam/
+
+# Maven / Java build files
+target/
+*.jar
+*.war
+*.ear
+
+java_sqs_client/target/
+
+
+# Logs and generated files
+*.log
+
+# OS or IDE-specific files (if applicable)
+*.class
+.idea/
+.vscode/
+
+# Maven and archiver status
+maven-status/
+maven-archiver/
