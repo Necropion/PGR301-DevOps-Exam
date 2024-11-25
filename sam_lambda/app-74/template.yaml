@@ -24,7 +24,6 @@ Resources:
   ImgGenerator:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: ImageGeneratorFunction-74
       CodeUri: ImgGenerator/
       Handler: ImgGenerator.lambda_handler
       Runtime: python3.9
