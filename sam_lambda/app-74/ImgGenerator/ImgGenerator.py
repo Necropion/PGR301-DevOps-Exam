@@ -28,7 +28,7 @@ def lambda_handler(event, context):
             "width": 512,
             "seed": seed,
         },
-    } ## fdfsfw
+    } ## fdfsfwkjb
 
     response = bedrock_client.invoke_model(
         modelId=MODEL_ID,

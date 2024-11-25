@@ -4,22 +4,27 @@ on:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout the repository code
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
+      # Step 3: Install AWS CLI and SAM CLI
       - name: Install AWS CLI
         run: |
           pip install awscli aws-sam-cli
 
+      # Step 4: Configure AWS Credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -27,12 +32,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
+      # Step 5: Build with SAM
       - name: Build with SAM
         run: |
           cd ./sam_lambda/app-74
           sam build
 
+      # Step 6: Deploy with SAM and handle "No changes to deploy"
       - name: Deploy with SAM
         run: |
           cd ./sam_lambda/app-74
-          sam deploy --no-confirm-changeset --stack-name img-generator-sam --capabilities CAPABILITY_IAM || if [ $? -eq 1 ]; then echo "No changes to deploy"; else exit 1; fi
+          set +e  # Allow the command to fail without stopping the script
+          DEPLOY_OUTPUT=$(sam deploy --no-confirm-changeset --stack-name img-generator-sam --capabilities CAPABILITY_IAM 2>&1)
+          DEPLOY_EXIT_CODE=$?
+          set -e  # Re-enable stopping the script on failure
+          echo "$DEPLOY_OUTPUT"
+          if [[ $DEPLOY_EXIT_CODE -eq 0 ]]; then
+            echo "Deploy successful"
+          elif echo "$DEPLOY_OUTPUT" | grep -q "No changes to deploy"; then
+            echo "No changes to deploy"
+            exit 0
+          else
+            echo "SAM Deploy failed"
+            exit $DEPLOY_EXIT_CODE
+          fi
