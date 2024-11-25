@@ -1,4 +1,4 @@
-name: Docker Image Build and Publish
+name: Docker Image Publish
 
 on:
   push:
@@ -6,17 +6,17 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
+      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
       # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       # Step 3: Log in to Docker Hub
       - name: Log in to Docker Hub
@@ -25,11 +25,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Step 4: Build and push the Docker image
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./java_sqs_client
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/java-sqs-client:latest
+      # Step 4: Build and tag the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t yourdockerhubusername/imagegenerator:latest .
+          docker tag yourdockerhubusername/imagegenerator:latest yourdockerhubusername/imagegenerator:$(date +'%Y%m%d%H%M%S')
+          docker tag yourdockerhubusername/imagegenerator:latest yourdockerhubusername/imagegenerator:main
 
+      # Step 5: Push Docker images
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push yourdockerhubusername/imagegenerator:latest
+          docker push yourdockerhubusername/imagegenerator:$(date +'%Y%m%d%H%M%S')
+          docker push yourdockerhubusername/imagegenerator:main
