@@ -35,15 +35,4 @@ jobs:
       - name: Deploy with SAM
         run: |
           cd ./sam_lambda/app-74
-          set +e
-          sam deploy --no-confirm-changeset --stack-name img-generator-sam --capabilities CAPABILITY_IAM
-          DEPLOY_EXIT_CODE=$?
-          set -e
-          if [ $DEPLOY_EXIT_CODE -eq 0 ]; then
-            echo "Deploy successful"
-          elif [ $DEPLOY_EXIT_CODE -eq 1 ] && grep -q "No changes to deploy" .aws-sam/log/deploy.log; then
-            echo "No changes to deploy"
-          else
-            echo "SAM Deploy failed"
-            exit $DEPLOY_EXIT_CODE
-          fi
+          sam deploy --no-confirm-changeset --stack-name img-generator-sam --capabilities CAPABILITY_IAM || if [ $? -eq 1 ]; then echo "No changes to deploy"; else exit 1; fi
