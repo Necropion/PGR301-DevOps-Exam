@@ -42,8 +42,6 @@ $RECYCLE.BIN/
 crash.log
 override.tf
 override.tf.json
-*.tfvars
-*.tfvars.json
 
 # Ignore ZIP files for Lambda functions
 *.zip
