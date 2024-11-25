@@ -25,10 +25,10 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Step 4: Set Version Tag
+      # Step 4: Set Version Tag with a formatted timestamp
       - name: Set Version Tag
         id: version
-        run: echo "::set-output name=VERSION::v$(date +'%Y%m%d%H%M')"
+        run: echo "::set-output name=VERSION::v$(date +'%Y-%m-%d_%H-%M')"
 
       # Step 5: Build and push the Docker image
       - name: Build and Push Docker Image
