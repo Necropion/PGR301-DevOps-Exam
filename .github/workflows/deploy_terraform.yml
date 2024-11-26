@@ -4,24 +4,21 @@ on:
   push:
     branches:
       - main
-      - '**'  # Matches all branches for running terraform plan
+      - '**'
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Set up Terraform environment
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.0
 
-      # Step 3: Configure AWS credentials for Terraform
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -29,31 +26,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      # Step 4: Change to the infra directory
       - name: Change Directory to infra
         run: cd infra/
 
-      # Step 5: Create Lambda Function Zip File
       - name: Create Lambda Zip File
         run: |
           cd infra/
           zip lambda_sqs.zip lambda_sqs.py
 
-      # Step 6: Initialize Terraform
       - name: Initialize Terraform
         working-directory: infra/
         run: terraform init
 
-      # Step 7: Run Terraform Plan on Non-Main Branches
       - name: Terraform Plan
         if: github.ref != 'refs/heads/main'
         working-directory: infra/
         run: terraform plan
 
-      # Step 8: Run Terraform Apply on Main Branch
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         working-directory: infra/
         run: terraform apply -auto-approve
-
-# Testing changes on feature branch
